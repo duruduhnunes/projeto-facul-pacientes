@@ -1,12 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from 'src/service/app.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { pacientesService } from 'src/service/paciente.service';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class pacientesController {
+  constructor(private readonly pacientesService: pacientesService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Post('/pacientes')
+  async createPaciente(@Body() body: any) {
+    const { nome, email, telefone } = body;
+    const paciente = await this.pacientesService.createPaciente(
+      nome,
+      email,
+      telefone,
+    );
+    return {
+      message: 'Paciente criado com sucesso',
+      paciente,
+    };
   }
 }
