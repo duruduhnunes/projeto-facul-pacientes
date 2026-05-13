@@ -12,7 +12,7 @@ datasource db {
 }
 
 model Pacientes {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   nome      String
   email     String   @unique
   telefone  String
