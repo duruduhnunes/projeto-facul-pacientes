@@ -48,4 +48,25 @@ export class pacientesService {
     });
     return paciente;
   }
+
+  async getAllPacientes() {
+    return this.prisma.pacientes.findMany();
+  }
+
+  async getPacienteByNome(nome: string) {
+    return this.prisma.pacientes.findMany({
+      where: {
+        nome: {
+          contains: nome,
+          mode: 'insensitive',
+        },
+      },
+    });
+  }
+
+  async getPacienteByEmail(email: string) {
+    return this.prisma.pacientes.findUnique({
+      where: { email },
+    });
+  }
 }
