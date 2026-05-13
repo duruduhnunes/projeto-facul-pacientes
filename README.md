@@ -23,12 +23,37 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+API de gerenciamento de pacientes construída com NestJS e Prisma.
+
+## Configuração do banco de dados
+
+O projeto usa PostgreSQL. Cada desenvolvedor roda o banco localmente.
+
+### Ubuntu/Debian
+
+```bash
+sudo apt install postgresql postgresql-contrib
+sudo service postgresql start
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+sudo -u postgres createdb pacientes
+```
+
+### Windows
+
+Baixe e instale o PostgreSQL em https://www.postgresql.org/download/windows/ (marque a opção para iniciar como serviço).
+
+Depois, abra o **SQL Shell (psql)** que vem instalado e rode:
+
+```sql
+ALTER USER postgres WITH PASSWORD 'postgres';
+CREATE DATABASE pacientes;
+```
 
 ## Project setup
 
 ```bash
-$ npm install
+npm install
+npx prisma migrate dev
 ```
 
 ## Compile and run the project
