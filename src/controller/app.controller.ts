@@ -1,11 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { pacientesService } from 'src/service/paciente.service';
 
-@Controller()
+@Controller('/pacientes')
 export class pacientesController {
   constructor(private readonly pacientesService: pacientesService) {}
 
-  @Post('/pacientes')
+  @Post()
   async createPaciente(@Body() body: any) {
     const { nome, email, telefone } = body;
     const paciente = await this.pacientesService.createPaciente(
@@ -13,9 +13,14 @@ export class pacientesController {
       email,
       telefone,
     );
+    return paciente;
+  }
+
+  @Put(':id')
+  async updatedPaciente(@Param('id') id: string, @Body() body: any) {
+    await this.pacientesService.updatePaciente(id, body);
     return {
-      message: 'Paciente criado com sucesso',
-      paciente,
+      message: 'Paciente atualizado com sucesso',
     };
   }
 }
