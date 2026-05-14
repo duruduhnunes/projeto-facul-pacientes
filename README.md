@@ -51,6 +51,7 @@ CREATE DATABASE pacientes;
 
 ## Project setup
 
+
 ```bash
 npm install
 npx prisma migrate dev

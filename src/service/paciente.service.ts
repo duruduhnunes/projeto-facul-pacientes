@@ -1,6 +1,7 @@
 import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { error } from 'node:console';
+import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
 
 @Injectable()
 export class pacientesService {
@@ -52,7 +53,23 @@ export class pacientesService {
     };
   }
 
-  async updatePaciente(id: string, body: any) {
+  async getAllPacientes() {
+    return this.prisma.pacientes.findMany();
+  }
+
+  async getPacienteById(id: string) {
+    return this.prisma.pacientes.findUnique({
+      where: { id },
+    });
+  }
+
+  async getPacienteByEmail(email: string) {
+    return this.prisma.pacientes.findUnique({
+      where: { email },
+    });
+  }
+
+  async updatePaciente(id: string, body: UpdatePacienteDto) {
     const pacienteDontExists = await this.prisma.pacientes.findUnique({
       where: {
         id,
