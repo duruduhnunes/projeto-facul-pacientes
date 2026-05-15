@@ -1,6 +1,5 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { error } from 'node:console';
 import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
 
 @Injectable()
@@ -8,19 +7,6 @@ export class pacientesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createPaciente(nome: string, email: string, telefone: string) {
-    if (!nome || !email || !telefone) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Todos os campos são obrigatórios, ex: nome, email e telefone',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: error,
-        },
-      );
-    }
-
     const emailExists = await this.prisma.pacientes.findUnique({
       where: {
         email,
@@ -28,16 +14,7 @@ export class pacientesService {
     });
 
     if (emailExists) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Email já cadastrado, por favor utilize outro email',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: error,
-        },
-      );
+      return null;
     }
 
     const paciente = await this.prisma.pacientes.create({
@@ -47,10 +24,8 @@ export class pacientesService {
         telefone,
       },
     });
-    return {
-      message: 'Paciente criado com sucesso',
-      paciente,
-    };
+
+    return paciente;
   }
 
   async getAllPacientes() {
@@ -70,24 +45,14 @@ export class pacientesService {
   }
 
   async updatePaciente(id: string, body: UpdatePacienteDto) {
-    const pacienteDontExists = await this.prisma.pacientes.findUnique({
+    const pacienteExists = await this.prisma.pacientes.findUnique({
       where: {
         id,
       },
     });
 
-    if (!pacienteDontExists) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error:
-            'Paciente não encontrado, por favor, verifique o id e tente novamente',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: error,
-        },
-      );
+    if (!pacienteExists) {
+      return 'PACIENTE_NOT_FOUND';
     }
 
     if (body.email) {
@@ -98,24 +63,17 @@ export class pacientesService {
       });
 
       if (emailExists && emailExists.id !== id) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            error: 'Email já cadastrado, por favor utilize outro email',
-          },
-          HttpStatus.BAD_REQUEST,
-          {
-            cause: error,
-          },
-        );
+        return 'EMAIL_ALREADY_EXISTS';
       }
     }
 
-    await this.prisma.pacientes.update({
+    const pacienteUpdated = await this.prisma.pacientes.update({
       where: {
         id,
       },
       data: body,
     });
+
+    return pacienteUpdated;
   }
 }
