@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
 
@@ -7,6 +11,12 @@ export class pacientesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createPaciente(nome: string, email: string, telefone: string) {
+    if (!nome || !email || !telefone) {
+      throw new BadRequestException(
+        'Todos os campos são obrigatórios, ex: nome, email e telefone',
+      );
+    }
+
     const emailExists = await this.prisma.pacientes.findUnique({
       where: {
         email,
@@ -14,7 +24,9 @@ export class pacientesService {
     });
 
     if (emailExists) {
-      return null;
+      throw new BadRequestException(
+        'Email já cadastrado, por favor utilize outro email',
+      );
     }
 
     const paciente = await this.prisma.pacientes.create({
@@ -25,7 +37,10 @@ export class pacientesService {
       },
     });
 
-    return paciente;
+    return {
+      message: 'Paciente criado com sucesso',
+      paciente,
+    };
   }
 
   async getAllPacientes() {
@@ -33,15 +48,27 @@ export class pacientesService {
   }
 
   async getPacienteById(id: string) {
-    return this.prisma.pacientes.findUnique({
+    const paciente = await this.prisma.pacientes.findUnique({
       where: { id },
     });
+
+    if (!paciente) {
+      throw new NotFoundException('Paciente não encontrado');
+    }
+
+    return paciente;
   }
 
   async getPacienteByEmail(email: string) {
-    return this.prisma.pacientes.findUnique({
+    const paciente = await this.prisma.pacientes.findUnique({
       where: { email },
     });
+
+    if (!paciente) {
+      throw new NotFoundException('Paciente não encontrado com esse email');
+    }
+
+    return paciente;
   }
 
   async updatePaciente(id: string, body: UpdatePacienteDto) {
@@ -52,7 +79,9 @@ export class pacientesService {
     });
 
     if (!pacienteExists) {
-      return 'PACIENTE_NOT_FOUND';
+      throw new NotFoundException(
+        'Paciente não encontrado, por favor, verifique o id e tente novamente',
+      );
     }
 
     if (body.email) {
@@ -63,7 +92,9 @@ export class pacientesService {
       });
 
       if (emailExists && emailExists.id !== id) {
-        return 'EMAIL_ALREADY_EXISTS';
+        throw new BadRequestException(
+          'Email já cadastrado, por favor utilize outro email',
+        );
       }
     }
 
@@ -74,6 +105,31 @@ export class pacientesService {
       data: body,
     });
 
-    return pacienteUpdated;
+    return {
+      message: 'Paciente atualizado com sucesso',
+      paciente: pacienteUpdated,
+    };
+  }
+
+  async deletePaciente(id: string) {
+    const pacienteExists = await this.prisma.pacientes.findUnique({
+      where: {
+        id,
+      },
+    });
+  
+    if (!pacienteExists) {
+      throw new NotFoundException('Paciente não encontrado');
+    }
+  
+    await this.prisma.pacientes.delete({
+      where: {
+        id,
+      },
+    });
+  
+    return {
+      message: 'Paciente deletado com sucesso',
+    };
   }
 }
