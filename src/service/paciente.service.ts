@@ -1,6 +1,10 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { error } from 'node:console';
+import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
 
 @Injectable()
 export class pacientesService {
@@ -8,15 +12,8 @@ export class pacientesService {
 
   async createPaciente(nome: string, email: string, telefone: string) {
     if (!nome || !email || !telefone) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Todos os campos são obrigatórios, ex: nome, email e telefone',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: error,
-        },
+      throw new BadRequestException(
+        'Todos os campos são obrigatórios, ex: nome, email e telefone',
       );
     }
 
@@ -27,15 +24,8 @@ export class pacientesService {
     });
 
     if (emailExists) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Email já cadastrado, por favor utilize outro email',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: error,
-        },
+      throw new BadRequestException(
+        'Email já cadastrado, por favor utilize outro email',
       );
     }
 
@@ -46,30 +36,51 @@ export class pacientesService {
         telefone,
       },
     });
+
     return {
       message: 'Paciente criado com sucesso',
       paciente,
     };
   }
 
-  async updatePaciente(id: string, body: any) {
-    const pacienteDontExists = await this.prisma.pacientes.findUnique({
+  async getAllPacientes() {
+    return this.prisma.pacientes.findMany();
+  }
+
+  async getPacienteById(id: string) {
+    const paciente = await this.prisma.pacientes.findUnique({
+      where: { id },
+    });
+
+    if (!paciente) {
+      throw new NotFoundException('Paciente não encontrado');
+    }
+
+    return paciente;
+  }
+
+  async getPacienteByEmail(email: string) {
+    const paciente = await this.prisma.pacientes.findUnique({
+      where: { email },
+    });
+
+    if (!paciente) {
+      throw new NotFoundException('Paciente não encontrado com esse email');
+    }
+
+    return paciente;
+  }
+
+  async updatePaciente(id: string, body: UpdatePacienteDto) {
+    const pacienteExists = await this.prisma.pacientes.findUnique({
       where: {
         id,
       },
     });
 
-    if (!pacienteDontExists) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error:
-            'Paciente não encontrado, por favor, verifique o id e tente novamente',
-        },
-        HttpStatus.BAD_REQUEST,
-        {
-          cause: error,
-        },
+    if (!pacienteExists) {
+      throw new NotFoundException(
+        'Paciente não encontrado, por favor, verifique o id e tente novamente',
       );
     }
 
@@ -81,24 +92,44 @@ export class pacientesService {
       });
 
       if (emailExists && emailExists.id !== id) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            error: 'Email já cadastrado, por favor utilize outro email',
-          },
-          HttpStatus.BAD_REQUEST,
-          {
-            cause: error,
-          },
+        throw new BadRequestException(
+          'Email já cadastrado, por favor utilize outro email',
         );
       }
     }
 
-    await this.prisma.pacientes.update({
+    const pacienteUpdated = await this.prisma.pacientes.update({
       where: {
         id,
       },
       data: body,
     });
+
+    return {
+      message: 'Paciente atualizado com sucesso',
+      paciente: pacienteUpdated,
+    };
+  }
+
+  async deletePaciente(id: string) {
+    const pacienteExists = await this.prisma.pacientes.findUnique({
+      where: {
+        id,
+      },
+    });
+  
+    if (!pacienteExists) {
+      throw new NotFoundException('Paciente não encontrado');
+    }
+  
+    await this.prisma.pacientes.delete({
+      where: {
+        id,
+      },
+    });
+  
+    return {
+      message: 'Paciente deletado com sucesso',
+    };
   }
 }
