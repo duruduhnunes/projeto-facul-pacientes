@@ -1,10 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
+import {
+  CamposObrigatoriosException,
+  EmailJaCadastradoException,
+  NotFoundExceptionComEmail,
+  NotFoundExceptionComId,
+} from 'src/exceptions/paciente.exception';
 
 @Injectable()
 export class pacientesService {
@@ -12,9 +14,7 @@ export class pacientesService {
 
   async createPaciente(nome: string, email: string, telefone: string) {
     if (!nome || !email || !telefone) {
-      throw new BadRequestException(
-        'Todos os campos são obrigatórios, ex: nome, email e telefone',
-      );
+      throw new CamposObrigatoriosException();
     }
 
     const emailExists = await this.prisma.pacientes.findUnique({
@@ -24,9 +24,7 @@ export class pacientesService {
     });
 
     if (emailExists) {
-      throw new BadRequestException(
-        'Email já cadastrado, por favor utilize outro email',
-      );
+      throw new EmailJaCadastradoException();
     }
 
     const paciente = await this.prisma.pacientes.create({
@@ -53,7 +51,7 @@ export class pacientesService {
     });
 
     if (!paciente) {
-      throw new NotFoundException('Paciente não encontrado');
+      throw new NotFoundExceptionComId();
     }
 
     return paciente;
@@ -65,7 +63,7 @@ export class pacientesService {
     });
 
     if (!paciente) {
-      throw new NotFoundException('Paciente não encontrado com esse email');
+      throw new NotFoundExceptionComEmail();
     }
 
     return paciente;
@@ -79,9 +77,7 @@ export class pacientesService {
     });
 
     if (!pacienteExists) {
-      throw new NotFoundException(
-        'Paciente não encontrado, por favor, verifique o id e tente novamente',
-      );
+      throw new NotFoundExceptionComId();
     }
 
     if (body.email) {
@@ -92,9 +88,7 @@ export class pacientesService {
       });
 
       if (emailExists && emailExists.id !== id) {
-        throw new BadRequestException(
-          'Email já cadastrado, por favor utilize outro email',
-        );
+        throw new EmailJaCadastradoException();
       }
     }
 
@@ -117,17 +111,17 @@ export class pacientesService {
         id,
       },
     });
-  
+
     if (!pacienteExists) {
-      throw new NotFoundException('Paciente não encontrado');
+      throw new NotFoundExceptionComId();
     }
-  
+
     await this.prisma.pacientes.delete({
       where: {
         id,
       },
     });
-  
+
     return {
       message: 'Paciente deletado com sucesso',
     };
