@@ -25,6 +25,7 @@ export class pacientesController {
   }
 
   @ApiOperation({ summary: 'Listar todos os pacientes' })
+  @Get()
   async getAllPacientes() {
     return this.pacientesService.getAllPacientes();
   }
