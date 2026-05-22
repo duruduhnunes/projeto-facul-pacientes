@@ -15,47 +15,4 @@ export class PacienteEntity {
   static create(email: string, nome: string, telefone: string): PacienteEntity {
     return new PacienteEntity(randomUUID(), nome, email, telefone);
   }
-
-  static get(
-    id: string,
-    email: string,
-    nome: string,
-    telefone: string,
-  ): PacienteEntity {
-    return new PacienteEntity(id, nome, email, telefone);
-  }
-
-  static findByEmail(
-    id: string,
-    email: string,
-    nome: string,
-    telefone: string,
-  ): PacienteEntity {
-    return new PacienteEntity(id, nome, email, telefone);
-  }
-  static findById(
-    id: string,
-    email: string,
-    nome: string,
-    telefone: string,
-  ): PacienteEntity {
-    return new PacienteEntity(id, nome, email, telefone);
-  }
-
-  static update(
-    id: string,
-    email: string,
-    nome: string,
-    telefone: string,
-  ): PacienteEntity {
-    return new PacienteEntity(id, nome, email, telefone);
-  }
-  static delete(
-    id: string,
-    email: string,
-    nome: string,
-    telefone: string,
-  ): PacienteEntity {
-    return new PacienteEntity(id, nome, email, telefone);
-  }
 }
