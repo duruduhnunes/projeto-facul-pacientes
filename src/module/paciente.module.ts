@@ -1,4 +1,4 @@
-import { Get, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PacienteController } from 'src/controller/paciente.controller';
 import { PacientesRepository } from 'src/repository/paciente.repository';
 import { PacientePrismaRepository } from 'src/repository/prisma.repository';

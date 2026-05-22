@@ -9,23 +9,20 @@ import { PacientesRepository } from 'src/repository/paciente.repository';
 export class UpdatePacienteCase {
   constructor(private readonly pacientesRepository: PacientesRepository) {}
 
-  async execute(id: string, nome: string, email: string, telefone: string) {
+  async execute(id: string, body: { nome?: string; email?: string; telefone?: string }) {
     const paciente = await this.pacientesRepository.findById(id);
     if (!paciente) {
       throw new NotFoundExceptionComId();
     }
 
-    const emailExists = await this.pacientesRepository.findByEmail(email);
-    if (emailExists && emailExists.id !== id) {
-      throw new EmailJaCadastradoException();
+    if (body.email) {
+      const emailExists = await this.pacientesRepository.findByEmail(body.email);
+      if (emailExists && emailExists.id !== id) {
+        throw new EmailJaCadastradoException();
+      }
     }
 
-    const updatedPaciente = await this.pacientesRepository.update(id, {
-      nome,
-      email,
-      telefone,
-    });
-
-    return updatedPaciente;
+    const pacienteAtualizado = await this.pacientesRepository.update(id, body);
+    return { message: 'Paciente atualizado com sucesso', paciente: pacienteAtualizado };
   }
 }

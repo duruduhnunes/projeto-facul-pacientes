@@ -5,11 +5,11 @@ import { PacientesRepository } from 'src/repository/paciente.repository';
 @Injectable()
 export class GetByEmailPacienteCase {
   constructor(private readonly pacienteRepository: PacientesRepository) {}
-  execute(email: string) {
-    const emailExists = this.pacienteRepository.findByEmail(email);
-    if (!emailExists) {
+  async execute(email: string) {
+    const paciente = await this.pacienteRepository.findByEmail(email);
+    if (!paciente) {
       throw new NotFoundExceptionComEmail();
     }
-    return emailExists;
+    return { message: 'Paciente encontrado com sucesso', paciente };
   }
 }

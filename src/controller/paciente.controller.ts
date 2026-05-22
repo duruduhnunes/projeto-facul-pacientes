@@ -13,6 +13,8 @@ import { GetAllPacienteCase } from 'src/use-cases/getAllPaciente';
 import { UpdatePacienteCase } from 'src/use-cases/updatePaciente';
 import { DeletePacientesCase } from 'src/use-cases/deletePaciente';
 import { GetByIdPacienteCase } from 'src/use-cases/getByIdPaciente';
+import { GetByEmailPacienteCase } from 'src/use-cases/getByEmailPaciente';
+import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
 
 @Controller('/pacientes')
 export class PacienteController {
@@ -22,6 +24,7 @@ export class PacienteController {
     private readonly updatePacienteCase: UpdatePacienteCase,
     private readonly deletePacienteCase: DeletePacientesCase,
     private readonly getByIdPacienteCase: GetByIdPacienteCase,
+    private readonly getByEmailPacienteCase: GetByEmailPacienteCase,
   ) {}
 
   @Post()
@@ -36,20 +39,20 @@ export class PacienteController {
 
   @Put(':id')
   async updatePaciente(
-    @Body() paciente: CreatePacienteDto,
+    @Body() paciente: UpdatePacienteDto,
     @Param('id') id: string,
   ) {
-    return this.updatePacienteCase.execute(
-      id,
-      paciente.nome,
-      paciente.email,
-      paciente.telefone,
-    );
+    return this.updatePacienteCase.execute(id, paciente);
   }
 
   @Delete(':id')
   async deletePaciente(@Param('id') id: string) {
     return this.deletePacienteCase.execute(id);
+  }
+
+  @Get('email/:email')
+  async getPacienteByEmail(@Param('email') email: string) {
+    return this.getByEmailPacienteCase.execute(email);
   }
 
   @Get(':id')

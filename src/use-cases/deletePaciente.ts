@@ -5,11 +5,14 @@ import { PacientesRepository } from 'src/repository/paciente.repository';
 @Injectable()
 export class DeletePacientesCase {
   constructor(private readonly pacientesRepository: PacientesRepository) {}
-  async execute(id: string): Promise<void> {
+  async execute(id: string): Promise<{ message: string }> {
     const paciente = await this.pacientesRepository.findById(id);
     if (!paciente) {
       throw new NotFoundExceptionComId();
     }
     await this.pacientesRepository.delete(id);
+    return {
+      message: 'Paciente deletado com sucesso',
+    };
   }
 }

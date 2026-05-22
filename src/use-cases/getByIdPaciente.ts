@@ -11,6 +11,6 @@ export class GetByIdPacienteCase {
     if (!paciente) {
       throw new NotFoundExceptionComId();
     }
-    return paciente;
+    return { message: 'Paciente encontrado com sucesso', paciente };
   }
 }
