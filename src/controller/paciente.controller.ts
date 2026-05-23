@@ -15,7 +15,9 @@ import { DeletePacientesCase } from 'src/use-cases/deletePaciente';
 import { GetByIdPacienteCase } from 'src/use-cases/getByIdPaciente';
 import { GetByEmailPacienteCase } from 'src/use-cases/getByEmailPaciente';
 import { UpdatePacienteDto } from 'src/dto/update-paciente.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('pacientes')
 @Controller('/pacientes')
 export class PacienteController {
   constructor(
