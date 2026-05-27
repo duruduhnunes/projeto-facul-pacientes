@@ -1,10 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreatePacienteDto {
   @ApiProperty({ description: 'Nome do paciente', example: 'João Silva' })
-  nome: string;
+  @IsString({ message: 'O nome deve ser uma string' })
+  @IsNotEmpty({ message: 'O nome é obrigatório' })
+  nome!: string;
+
   @ApiProperty({ description: 'Email do paciente', example: 'joao@email.com' })
-  email: string;
+  @IsEmail({}, { message: 'Email inválido' })
+  @IsNotEmpty({ message: 'O email é obrigatório' })
+  email!: string;
+
   @ApiProperty({ description: 'Telefone do paciente', example: '11999999999' })
-  telefone: string;
+  @IsString({ message: 'O telefone deve ser uma string' })
+  @IsNotEmpty({ message: 'O telefone é obrigatório' })
+  telefone!: string;
 }

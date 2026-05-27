@@ -20,8 +20,20 @@ export class PacientePrismaRepository extends PacientesRepository {
     return createdPaciente;
   }
 
-  async findAll(): Promise<PacienteEntity[]> {
-    return this.prisma.pacientes.findMany();
+  async findAll(
+    page: number,
+    limit: number,
+  ): Promise<{ pacientes: PacienteEntity[]; total: number }> {
+    const skip = (page - 1) * limit;
+    const [pacientes, total] = await Promise.all([
+      this.prisma.pacientes.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.pacientes.count(),
+    ]);
+    return { pacientes, total };
   }
 
   async findByEmail(email: string): Promise<PacienteEntity | null> {

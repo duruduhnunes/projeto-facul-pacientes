@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreatePacienteCase } from 'src/use-cases/createPaciente';
 import { CreatePacienteDto } from 'src/dto/create-paciente.dto';
@@ -35,8 +36,14 @@ export class PacienteController {
   }
 
   @Get()
-  async getAllPacientes() {
-    return this.getAllPacienteCase.execute();
+  async getAllPacientes(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.getAllPacienteCase.execute(
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+    );
   }
 
   @Put(':id')
