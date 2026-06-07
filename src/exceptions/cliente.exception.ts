@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class PacienteNaoEncontradoException extends HttpException {
+export class ClienteNaoEncontradoException extends HttpException {
   constructor() {
     super(
       {
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'Paciente não encontrado',
+        message: 'Cliente não encontrado',
         error: 'Not Found',
       },
       HttpStatus.NOT_FOUND,
@@ -44,7 +44,7 @@ export class NotFoundExceptionComId extends HttpException {
     super(
       {
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'Paciente não encontrado com esse id',
+        message: 'Cliente não encontrado com esse id',
         error: 'Not Found',
       },
       HttpStatus.NOT_FOUND,
@@ -57,7 +57,7 @@ export class NotFoundExceptionComEmail extends HttpException {
     super(
       {
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'Paciente não encontrado com esse email',
+        message: 'Cliente não encontrado com esse email',
         error: 'Not Found',
       },
       HttpStatus.NOT_FOUND,

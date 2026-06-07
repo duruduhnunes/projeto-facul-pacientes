@@ -16,8 +16,8 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('API de Pacientes')
-    .setDescription('API para gerenciamento de pacientes')
+    .setTitle('API de Clientes')
+    .setDescription('API para gerenciamento de clientes')
     .setVersion('1.0')
     .build();
 

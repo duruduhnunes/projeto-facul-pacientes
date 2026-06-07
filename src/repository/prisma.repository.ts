@@ -1,65 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { PacientesRepository } from './paciente.repository';
+import { ClientesRepository } from './cliente.repository';
 import { PrismaService } from 'src/service/prisma.service';
-import { PacienteEntity } from 'src/entities/pacientes.entity';
+import { ClienteEntity } from 'src/entities/clientes.entity';
 
 @Injectable()
-export class PacientePrismaRepository extends PacientesRepository {
+export class ClientePrismaRepository extends ClientesRepository {
   constructor(private prisma: PrismaService) {
     super();
   }
 
-  async save(paciente: PacienteEntity): Promise<PacienteEntity> {
-    const createdPaciente = await this.prisma.pacientes.create({
+  async save(cliente: ClienteEntity): Promise<ClienteEntity> {
+    const createdCliente = await this.prisma.clientes.create({
       data: {
-        email: paciente.email,
-        nome: paciente.nome,
-        telefone: paciente.telefone,
+        email: cliente.email,
+        nome: cliente.nome,
+        telefone: cliente.telefone,
       },
     });
-    return createdPaciente;
+    return createdCliente;
   }
 
   async findAll(
     page: number,
     limit: number,
-  ): Promise<{ pacientes: PacienteEntity[]; total: number }> {
+  ): Promise<{ clientes: ClienteEntity[]; total: number }> {
     const skip = (page - 1) * limit;
-    const [pacientes, total] = await Promise.all([
-      this.prisma.pacientes.findMany({
+    const [clientes, total] = await Promise.all([
+      this.prisma.clientes.findMany({
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.pacientes.count(),
+      this.prisma.clientes.count(),
     ]);
-    return { pacientes, total };
+    return { clientes, total };
   }
 
-  async findByEmail(email: string): Promise<PacienteEntity | null> {
-    return this.prisma.pacientes.findUnique({
+  async findByEmail(email: string): Promise<ClienteEntity | null> {
+    return this.prisma.clientes.findUnique({
       where: { email },
     });
   }
 
-  async findById(id: string): Promise<PacienteEntity | null> {
-    return this.prisma.pacientes.findUnique({
+  async findById(id: string): Promise<ClienteEntity | null> {
+    return this.prisma.clientes.findUnique({
       where: { id },
     });
   }
 
   async update(
     id: string,
-    paciente: Partial<PacienteEntity>,
-  ): Promise<PacienteEntity> {
-    return this.prisma.pacientes.update({
+    cliente: Partial<ClienteEntity>,
+  ): Promise<ClienteEntity> {
+    return this.prisma.clientes.update({
       where: { id },
-      data: paciente,
+      data: cliente,
     });
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.pacientes.delete({
+    await this.prisma.clientes.delete({
       where: { id },
     });
   }

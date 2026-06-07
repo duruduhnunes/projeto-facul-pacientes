@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-export class PacienteEntity {
+export class ClienteEntity {
   constructor(id: string, nome: string, email: string, telefone: string) {
     this.id = id || randomUUID();
     this.nome = nome;
@@ -12,7 +12,7 @@ export class PacienteEntity {
   email: string;
   telefone: string;
 
-  static create(email: string, nome: string, telefone: string): PacienteEntity {
-    return new PacienteEntity(randomUUID(), nome, email, telefone);
+  static create(email: string, nome: string, telefone: string): ClienteEntity {
+    return new ClienteEntity(randomUUID(), nome, email, telefone);
   }
 }
