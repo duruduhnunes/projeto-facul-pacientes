@@ -1,5 +1,7 @@
 # API de Clientes
 
+![Arquitetura Limpa](public/arqlimpa.png)
+
 API de gerenciamento de clientes construída com NestJS e Prisma.
 
 ## Configuração do banco de dados
