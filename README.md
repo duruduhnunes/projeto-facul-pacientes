@@ -1,6 +1,6 @@
-# API de Pacientes
+# API de Clientes
 
-API de gerenciamento de pacientes construída com NestJS e Prisma.
+API de gerenciamento de clientes construída com NestJS e Prisma.
 
 ## Configuração do banco de dados
 
@@ -12,7 +12,7 @@ O projeto usa PostgreSQL. Cada desenvolvedor roda o banco localmente.
 sudo apt install postgresql postgresql-contrib
 sudo service postgresql start
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
-sudo -u postgres createdb pacientes
+sudo -u postgres createdb clientes
 ```
 
 ### Windows
@@ -23,7 +23,7 @@ Depois, abra o **SQL Shell (psql)** que vem instalado e rode:
 
 ```sql
 ALTER USER postgres WITH PASSWORD 'postgres';
-CREATE DATABASE pacientes;
+CREATE DATABASE clientes;
 ```
 
 ## Instalação e execução
@@ -39,7 +39,7 @@ npm install
 Crie o arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/pacientes"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/clientes"
 ```
 
 **3. Rode as migrations**

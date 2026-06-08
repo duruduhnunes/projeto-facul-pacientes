@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PacienteModule } from './module/paciente.module';
+import { ClienteModule } from './module/cliente.module';
 import { PrismaModule } from './module/prisma.module';
 
 @Module({
@@ -8,7 +8,7 @@ import { PrismaModule } from './module/prisma.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    PacienteModule,
+    ClienteModule,
     PrismaModule,
   ],
 })
